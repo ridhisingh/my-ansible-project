@@ -1,0 +1,21 @@
+---
+- hosts: all
+  become: true
+  become_user: root
+  tasks:
+   - name: install vsftpd latest
+     apt: 
+      name: vsftpd
+      state: latest
+     when: ansible_os_family == "Ubuntu"
+   - name: install vsftpd latest
+     yum:
+      name: vsftpd
+      state: latest
+     when: ansible_os_family == "RedHat"
+   - name: enable and start the vsftpd service
+     service:
+      name: vsftpd 
+      enabled: true
+      state: started
+

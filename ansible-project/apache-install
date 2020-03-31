@@ -1,0 +1,12 @@
+---
+- hosts: all
+  become: true
+  become_user: root
+  tasks:
+  - name: install httpd on ec2-user
+    yum: name=httpd state=latest
+    when: ansible_user == "ec2-user"
+  - name:  install httpd on ubuntu
+    apt: name=httpd state=latest
+    when: ansible_user == "ubuntu"
+
