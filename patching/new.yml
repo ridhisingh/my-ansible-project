@@ -1,0 +1,13 @@
+ - name: Rebooting
+    command: shutdown -r now "Reboot required for updated kernel"
+    async: 0
+    poll: 0
+    sudo: true
+    ignore_errors: true
+    when: reboot_check.stdout.find("reboot") != -1
+    register: rebooting
+
+  - name: Wait for thing to reboot...
+    pause: seconds=45
+    when: rebooting|changed
+

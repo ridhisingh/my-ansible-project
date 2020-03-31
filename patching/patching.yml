@@ -1,0 +1,53 @@
+---
+- hosts: 3.16.183.38
+  become: true
+  become_user: root
+  become_method: sudo
+  tasks:
+  - name: Verify the application status 
+    shell: if ps -eaf | egrep 'httpd'|grep -v grep > /dev/null; then echo 'process_running'; else echo 'process_not_running';fi
+    ignore_errors: true
+    register: appr_process_check
+  - debug: msg="{{ appr_process_check.stdout }}"
+  
+  - name: Decision point to start patching
+    fail: msg="{{ ansible__hostname }} have running application. Please stop the application first, then attempt patching."
+    when: appr_process_check.stdout == "process_running"
+  
+  - name: Check if kernel-devel is installed or not
+    yum:
+     list: kernel
+    register: is_installed
+  - debug: msg="kernel is already installed on server"
+    when: (is_installed.results|length != 1)
+  - debug: msg="kernel is not installed on the server"
+    when: (is_installed.results|length == 1)
+  
+  - name: Upgrade all packages on the server
+    yum: 
+     name: kernel
+     state: latest
+    when:  appr_process_check.stdout == "process_not_running"
+    ignore_errors: true
+    register: yum_update
+  - debug: msg=" kernel has been installed on server"
+    when: yum_update.rc == 0
+
+  - name: Check if reboot is required after kernel
+    shell: kernel_new=$(rpm -qa --last kernel | head -1 | awk '{print $1}' | sed 's/kernel-//g'); kernel_now=$(uname -r);if [[ $kernel_new != kernel_now ]];then echo "reboot needed"; else echo "reboot not needed";fi
+    ignore_errors: true
+    register: reboot_check
+  - debug: msg="{{ reboot_check.stdout }}"
+
+  - name: Rebooting
+    command: shutdown -r now "Reboot required for updated kernel"
+    async: 0
+    poll: 0
+    ignore_errors: true
+    when: reboot_check.stdout.find("reboot") != -1
+    register: rebooting
+
+  - name: Wait for thing to reboot...
+    pause: seconds=45
+    when: rebooting|changed
+
