@@ -1,0 +1,14 @@
+---
+- hosts: all
+  become: true
+  become_user: root
+  tasks:
+  - name: more complex items to add several users
+    user:
+     name: "{{ item.name }}"
+     uid: "{{ item.uid }}"
+     groups: "{{ item.groups }}"
+     state: present
+    with_items:
+     - { name: user1, uid: 1002, groups: "wheels, staffs" }
+     - { name: user2, uid: 1003, groups: staffs }

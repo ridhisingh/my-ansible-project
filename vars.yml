@@ -1,0 +1,38 @@
+---
+- hosts: 13.58.29.234   # here we are using the client-machine ip
+  become: true
+  become_user: root
+  vars:
+   web_pkg: httpd
+   firewall_pkg: firewalld
+   web_service: httpd
+   firewall_service: firewalld
+   rule: http
+  tasks:
+  - name: Install the required package
+    yum:
+     name:
+      - "{{ web_pkg }}"
+      - "{{ firewall_pkg }}"
+     state: latest
+  - name: start and enable the httpd service
+    service:
+     name: "{{ web_service }}"
+     state: started
+     enabled: true
+  - name: start the firewall service
+    service:
+     name: "{{ firewall_service }}"
+     state: started
+     enabled: true
+  - name: Create the web content to be served
+    copy:
+     content: "Hi, this is my Ansible realted website\n"
+     dest: /var/www/html/index.html
+  - name: Open the port for {{ rule }}
+    firewalld:
+     service: "{{ rule }}"
+     permanent: true
+     immediate: true
+     state: enabled
+      

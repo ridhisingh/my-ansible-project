@@ -1,0 +1,12 @@
+---
+- hosts: all
+  become: true
+  become_user: root
+  tasks:
+  - name: "loop through list"
+    debug:
+     msg: "An item: {{ item }}"
+    with_items:
+    - 1
+    - 2
+    - 3

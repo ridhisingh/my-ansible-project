@@ -1,0 +1,10 @@
+- hosts: all
+  become: true
+  become_user: root
+  tasks:
+    - name: change the file permission, user and group
+      file:
+       dest: /home/myfile/myfile.txt
+       owner: ridhi
+       group: mygroup
+       mode: 777

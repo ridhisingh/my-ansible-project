@@ -1,0 +1,14 @@
+---
+- hosts: all
+  become: true
+  become_user: root
+  tasks:
+  - name: restart everything
+    command: echo "this task will restart the web server"
+    notify:
+    - restart_apache
+  handlers:
+  - name: restart_apache
+    service:
+     name: httpd
+     state: restarted  

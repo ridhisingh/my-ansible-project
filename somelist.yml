@@ -1,0 +1,14 @@
+---
+- hosts: all
+  become: true
+  become_user: root
+  vars:
+   somelist:
+    - grocery
+    - weapons
+    - medicine
+  tasks:
+  - name: "loop through list from a variable"
+    debug:
+      msg: "An item: {{ item }}"
+    with_items: "{{ somelist }}"

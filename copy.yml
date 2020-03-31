@@ -1,0 +1,7 @@
+- hosts: all
+  become: true
+  tasks:
+    - name: copy the file 
+      copy:
+       src: /etc/ansible/myfile.txt
+       dest: /home/myfile/

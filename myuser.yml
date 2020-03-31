@@ -1,0 +1,12 @@
+---
+- hosts: all
+  become: true
+  become_user: root
+  tasks:
+  - user:
+     name: "{{ item.name }}"
+     state: present
+     groups: "{{ item.groups }}"
+    with_items:
+     - { name: 'jane', groups: 'wheel' }
+    # - { name: 'jane1', groups: 'wheel1' }

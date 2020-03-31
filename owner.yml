@@ -1,0 +1,8 @@
+- hosts: all
+  become: true
+  become_user: root
+  tasks:
+   - name: create user 
+     user: name=ridhi state=present
+   - name: create group
+     group: name=mygroup state=present

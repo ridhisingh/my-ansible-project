@@ -1,0 +1,12 @@
+---
+- hosts: all
+  become: true
+  become_user: root
+  tasks:
+  - name: Install all the items
+    yum:
+     name: "{{ item }}"
+     state: latest
+    with_items:
+    - postfix
+    - dovecot

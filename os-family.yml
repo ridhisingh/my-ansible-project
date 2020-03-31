@@ -1,0 +1,10 @@
+- hosts: all
+  become: true
+  tasks:
+    - name: install apache this way
+      apt: name=apache2 update_cache=yes state=latest
+      when: ansible_os_family == "Ubuntu"
+
+    - name: install apache that way
+      yum: name=httpd state=latest
+      when: ansible_os_family == "RedHat"

@@ -1,0 +1,17 @@
+---
+- hosts: 13.58.29.234
+  become: true
+  become_user: root
+  vars:
+   remote_dir: /etc/ansible/facts.d
+   facts_file: /etc/ansible/custom.fact
+  tasks:
+  - name: Creates the remote directory
+    file:
+     state: directory
+     recurse: yes     # Setting recurse to no will override this value,
+     path: "{{ remote_dir }}"
+  - name: Installs the new facts
+    copy:
+     src: "{{ facts_file }}"
+     dest: "{{ remote_dir }}"   

@@ -1,0 +1,6 @@
+---
+- hosts: 13.59.153.247
+  become: true
+  become_user: root
+  roles:
+  - apache
